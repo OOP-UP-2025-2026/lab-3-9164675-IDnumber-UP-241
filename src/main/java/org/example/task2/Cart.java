@@ -4,19 +4,20 @@ import java.util.Arrays;
 
 public class Cart {
 
-    public Item[] contents;
-    int index;
+    private Item[] contents;
+    private int index;
 
-    Cart(Item[] _contents) {
-        this.contents = _contents;
+    public Cart(int capacity) {
+        this.contents = new Item[capacity];
+        this.index = 0;
     }
 
-    public void removeById(int itemIndex) {
+    public void removeById(long itemId) {
 
         if (index == 0)
             return;
 
-        int foundItemIndex = findItemInArray(contents[itemIndex]);
+        int foundItemIndex = findItemIndexById(itemId);
 
         if (foundItemIndex == -1)
             return;
@@ -30,34 +31,37 @@ public class Cart {
         shiftArray(foundItemIndex);
     }
 
-    public void shiftArray(int itemIndex) {
+    private void shiftArray(int itemIndex) {
         for (int i = itemIndex; i < index - 1; i++) {
             contents[i] = contents[i + 1];
         }
-        contents[index-1] = null;
+        contents[index - 1] = null;
         index--;
     }
 
-    public int findItemInArray(Item item) {
+    private int findItemIndexById(long itemId) {
         for (int i = 0; i < index; i++) {
-            if (contents[i].id == item.id) {
+            if (contents[i].getId() == itemId) {
                 return i;
             }
         }
-
         return -1;
     }
 
-    void add(Item item) {
+    public void add(Item item) {
         if (isCartFull())
             return;
 
-        contents[index] = item;
-        index++;
+        this.contents[this.index] = item;
+        this.index++;
     }
 
     public boolean isCartFull() {
         return index == contents.length;
+    }
+
+    public Item[] getItems() {
+        return Arrays.copyOf(contents, index);
     }
 
     @Override
